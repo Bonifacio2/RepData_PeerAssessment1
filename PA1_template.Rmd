@@ -7,19 +7,38 @@ output:
 
 
 ## Loading and preprocessing the data
-
-
+```{r}
+unzip("activity.zip")
+activityData <- read.csv("activity.csv")
+cleanData <- subset(activityData, !is.na(activityData$steps))
+cleanData$date <- as.Date(cleanData$date, '%Y-%m-%d')
+```
 
 ## What is mean total number of steps taken per day?
+```{r}
+library("dplyr")
+byDate <- group_by(cleanData, date)
+sumByDate <- summarise(byDate, total=sum(steps))
+hist(sumByDate$total)
+```
 
-
+### mean by date
+```{r}
+summarise(byDate, mean=mean(steps))
+```
+### median by date
+```{r}
+summarise(byDate, median=median(steps))
+```
 
 ## What is the average daily activity pattern?
+```{r}
+byInterval <- group_by(cleanData, interval)
 
-
+intervalByStepsMean <- summarise(byInterval, stepsMean=mean(steps))
+plot(intervalByStepsMean$interval, intervalByStepsMean$stepsMean, type="l")
+```
 
 ## Imputing missing values
-
-
 
 ## Are there differences in activity patterns between weekdays and weekends?
